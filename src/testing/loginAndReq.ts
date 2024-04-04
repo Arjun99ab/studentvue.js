@@ -6,7 +6,6 @@ import { wrapper } from 'axios-cookiejar-support';
 // @ts-ignore
 import { CookieJar } from 'tough-cookie';
 
-console.log(process.env.USERNAME);
 const jar = new CookieJar();
 const client = wrapper(axios.create({
     jar: jar,
@@ -92,7 +91,9 @@ const gradebookFetch = async(cookieAuth: any) => {
 }
 
 client.post("PXP2_Login_Student.aspx?regenerateSessionId=True", loginData, loginConfig).then(({ config }) => {
-    console.log(config.jar.toJSON());
+    if (config.jar) {
+        console.log(config.jar.toJSON());
+    }
     let gradebookConfig = {
         jar: config.jar,
         withCredentials: true,

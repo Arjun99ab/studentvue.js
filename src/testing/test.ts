@@ -1,6 +1,5 @@
 import StudentVue from '..';
 import axios from 'axios';
-// import credentials from './credentials.json';
 
 const loginUrl = "https://md-mcps-psv.edupoint.com/PXP2_Login_Student.aspx?regenerateSessionId=False";
 console.log(loginUrl)

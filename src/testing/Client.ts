@@ -109,11 +109,26 @@ export default class Client {
                 'Referer': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0',
             }
         }
+        let classData = '{"FriendlyName":"genericdata.classdata","Method":"GetClassData","Parameters":"{}"}';
+        let classConfig = {
+            jar: this.cookieJar,
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8', 
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 
+                'Sec-Fetch-Mode': 'cors', 
+                'host': 'md-mcps-psv.edupoint.com', 
+                'Origin': 'https://md-mcps-psv.edupoint.com', 
+                'Referer': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0',
+            }
+        }
         return new Promise((resolve, reject) => {
-            this.client.post('https://md-mcps-psv.edupoint.com/service/PXP2Communication.asmx/LoadControl', loadControlData, loadControlConfig).then(({ data }) => {
-                resolve(data)
-            }).catch((err) => {
-                reject(err)
+            this.client.post('https://md-mcps-psv.edupoint.com/service/PXP2Communication.asmx/LoadControl', loadControlData, loadControlConfig).then(() => {
+                this.client.post('https://md-mcps-psv.edupoint.com/api/GB/ClientSideData/Transfer?action=genericdata.classdata-GetClassData', classData, classConfig).then(({ data }) => {
+                    resolve(data);
+                }).catch((err) => {
+                    reject(err);
+                })
             })
         })
     }

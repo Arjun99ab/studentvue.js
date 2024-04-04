@@ -67,7 +67,7 @@ export default class Client {
         })
     }
 
-    public getClasses(): Promise<string>  {
+    public getClasses(): Promise<JSON>  {
         let gradebookData = '{"request":{"gradingPeriodGU":"1022E1B6-C707-495E-89AB-BF4811ED3EF1","AGU":"0","orgYearGU":"2770147F-2A1B-44E3-87E8-90EE58CD89E7","schoolID":199,"markPeriodGU":"90D5191E-ABB2-4F94-A1A3-159A82A79B82"}}';
         let gradebookConfig = {
             jar: this.cookieJar,
@@ -87,10 +87,28 @@ export default class Client {
         return new Promise((resolve, reject) => {
             this.client.post("service/PXP2Communication.asmx/GradebookFocusClassInfo", gradebookData, gradebookConfig).then(({ data }) => {
                 // console.log(JSON.stringify(data))
-                resolve(JSON.stringify(data));
+                resolve(data);
             }).catch((err) => {
                 console.log(err);
                 reject(err);
+            })
+        })
+    }
+
+    public getClass(): Promise<JSON> {
+        let loadControlData = '{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"schoolID":199,"classID":443672,"gradePeriodGU":"1022E1B6-C707-495E-89AB-BF4811ED3EF1","subjectID":-1,"teacherID":-1,"markPeriodGU":"90D5191E-ABB2-4F94-A1A3-159A82A79B82","assignmentID":-1,"standardIdentifier":null,"viewName":"courseContent","studentGU":"3C940FFB-CD36-42C5-A4A4-F36B6879B3A2","AGU":"0","OrgYearGU":"2770147F-2A1B-44E3-87E8-90EE58CD89E7"}}}';
+        let loadControlConfig = {
+            jar: this.cookieJar,
+            withCredentials: true,
+            headers: {
+
+            }
+        }
+        return new Promise((resolve, reject) => {
+            this.client.post('https://md-mcps-psv.edupoint.com/service/PXP2Communication.asmx/LoadControl', loadControlData, loadControlConfig).then(({ data }) => {
+                resolve(data)
+            }).catch((err) => {
+                reject(err)
             })
         })
     }

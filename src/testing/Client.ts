@@ -4,10 +4,7 @@ import { wrapper } from 'axios-cookiejar-support';
 // @ts-ignore
 import { CookieJar } from 'tough-cookie';
 
-/**
- * The StudentVUE Client to access the API
- * @constructor
- */
+
 export default class Client {
     private hostUrl: string;
     private username: string;
@@ -36,10 +33,6 @@ export default class Client {
         this.username = username;
         this.password = password;
     }
-  
-    /**
-     * Validate's the user's credentials. It will throw an error if credentials are incorrect
-     */
     public createSession(): Promise<void> {
         let loginData = {
             '__EVENTVALIDATION': 'UGw6YPMBC2Ub2woFOSKtuDnEaAJXmBfHSaK42KRG0jHLNFyqVzjvBvvyPphj3Lm3YKf3dz4v5Pc5aOYqM+XUbYjXXKufvDIe3aH47s0hr/VKGOqW29PVii2CuaWytgEvKA5+0/xgxixdX9Gw/ju6izPhdZdhZOvvsNfmFwmdyCk=',
@@ -90,15 +83,15 @@ export default class Client {
                 'Referer': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0',
             },
         };
+        console.log(this.cookieJar)
         return new Promise((resolve, reject) => {
             this.client.post("service/PXP2Communication.asmx/GradebookFocusClassInfo", gradebookData, gradebookConfig).then(({ data }) => {
-                resolve(data);
+                // console.log(JSON.stringify(data))
+                resolve(JSON.stringify(data));
             }).catch((err) => {
                 console.log(err);
                 reject(err);
             })
         })
-
     }
-        
 }

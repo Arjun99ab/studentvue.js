@@ -74,8 +74,5 @@
   "directories": {
     "doc": "docs",
     "lib": "lib"
-  },
-  "publishConfig": {
-    "@Arjun99ab:registry": "https://npm.pkg.github.com"
   }
 }

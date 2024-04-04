@@ -6,7 +6,6 @@ import { wrapper } from 'axios-cookiejar-support';
 // @ts-ignore
 import { CookieJar } from 'tough-cookie';
 
-console.log(process.env.USERNAME);
 const jar = new CookieJar();
 const client = wrapper(axios.create({
     jar: jar,

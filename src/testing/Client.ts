@@ -104,6 +104,8 @@ export default class Client {
                 'Content-Type': 'application/json; charset=UTF-8', 
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 
                 'Sec-Fetch-Mode': 'cors', 
+                'Sec-Fetch-User': '?1', 
+                'Sec-Fetch-Dest': 'document', 
                 'host': 'md-mcps-psv.edupoint.com', 
                 'Origin': 'https://md-mcps-psv.edupoint.com', 
                 'Referer': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0',
@@ -120,6 +122,8 @@ export default class Client {
                 'host': 'md-mcps-psv.edupoint.com', 
                 'Origin': 'https://md-mcps-psv.edupoint.com', 
                 'Referer': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0',
+                'Sec-Fetch-User': '?1', 
+                'Sec-Fetch-Dest': 'document', 
             }
         }
         return new Promise((resolve, reject) => {

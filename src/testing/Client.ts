@@ -96,34 +96,38 @@ export default class Client {
     }
 
     public getClass(): Promise<JSON> {
-        let loadControlData = '{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"schoolID":199,"classID":443672,"gradePeriodGU":"1022E1B6-C707-495E-89AB-BF4811ED3EF1","subjectID":-1,"teacherID":-1,"markPeriodGU":"90D5191E-ABB2-4F94-A1A3-159A82A79B82","assignmentID":-1,"standardIdentifier":null,"viewName":"courseContent","studentGU":"3C940FFB-CD36-42C5-A4A4-F36B6879B3A2","AGU":"0","OrgYearGU":"2770147F-2A1B-44E3-87E8-90EE58CD89E7"}}}';
+        let loadControlData = '{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"schoolID":199,"classID":443297,"gradePeriodGU":"1022E1B6-C707-495E-89AB-BF4811ED3EF1","subjectID":-1,"teacherID":-1,"markPeriodGU":"90D5191E-ABB2-4F94-A1A3-159A82A79B82","assignmentID":-1,"standardIdentifier":null,"viewName":"courseContent","studentGU":"F80D360F-12EE-4ED0-B70B-C80BE5E1A209","AGU":"0","OrgYearGU":"2770147F-2A1B-44E3-87E8-90EE58CD89E7"}}}';
         let loadControlConfig = {
             jar: this.cookieJar,
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8', 
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 
+                'Accept': 'application/json, text/javascript, */*; q=0.01', 
                 'Sec-Fetch-Mode': 'cors', 
                 'Sec-Fetch-User': '?1', 
-                'Sec-Fetch-Dest': 'document', 
+                'Sec-Fetch-Dest': 'empty', 
+                'Sec-Fetch-Site': 'same-origin', 
                 'host': 'md-mcps-psv.edupoint.com', 
                 'Origin': 'https://md-mcps-psv.edupoint.com', 
                 'Referer': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0',
             }
         }
+
         let classData = '{"FriendlyName":"genericdata.classdata","Method":"GetClassData","Parameters":"{}"}';
         let classConfig = {
             jar: this.cookieJar,
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8', 
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 
-                'Sec-Fetch-Mode': 'cors', 
+                'Accept': 'application/json, text/javascript, */*; q=0.01', 
+                'Accept-Language': 'en-US,en;q=0.9',
                 'host': 'md-mcps-psv.edupoint.com', 
                 'Origin': 'https://md-mcps-psv.edupoint.com', 
                 'Referer': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0',
                 'Sec-Fetch-User': '?1', 
-                'Sec-Fetch-Dest': 'document', 
+                'Sec-Fetch-Dest': 'empty', 
+                'Sec-Fetch-Mode': 'cors', 
+                'Sec-Fetch-Site': 'same-origin', 
             }
         }
         return new Promise((resolve, reject) => {

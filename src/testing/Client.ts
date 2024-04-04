@@ -101,7 +101,12 @@ export default class Client {
             jar: this.cookieJar,
             withCredentials: true,
             headers: {
-
+                'Content-Type': 'application/json; charset=UTF-8', 
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 
+                'Sec-Fetch-Mode': 'cors', 
+                'host': 'md-mcps-psv.edupoint.com', 
+                'Origin': 'https://md-mcps-psv.edupoint.com', 
+                'Referer': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0',
             }
         }
         return new Promise((resolve, reject) => {

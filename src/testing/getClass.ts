@@ -19,7 +19,7 @@ client.createSession().then(() => {
 
     // get class
     console.log("GET CLASS")
-    client.getClass().then((data) => {
+    client.getAssignments().then((data) => {
         console.log(JSON.stringify(data));
     }).catch((err) => {
         console.log(err)

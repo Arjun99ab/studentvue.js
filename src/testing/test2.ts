@@ -92,7 +92,9 @@ const gradebookFetch = async(cookieAuth: any) => {
 }
 
 client.post("PXP2_Login_Student.aspx?regenerateSessionId=True", loginData, loginConfig).then(({ config }) => {
-    console.log(config.jar.toJSON());
+    if (config.jar) {
+        console.log(config.jar.toJSON());
+    }
     let gradebookConfig = {
         jar: config.jar,
         withCredentials: true,

@@ -14,9 +14,9 @@ class Client {
     private hostUrl: string;
     private username: string;
     private password: string;
-    // private schoolID: string;
-    // private orgYearID: string;
-    // public sessionId: string = '';
+    private schoolID = '';
+    private orgYearGU = ''
+    public sessionId = '';
     public cookieJar = new CookieJar();
     public client = wrapper(axios.create({
         jar: this.cookieJar,
@@ -41,7 +41,7 @@ class Client {
         this.password = password;
     }
     public async createSession(): Promise<void> {
-        let loginData = {
+        const loginData = {
             '__EVENTVALIDATION': 'UGw6YPMBC2Ub2woFOSKtuDnEaAJXmBfHSaK42KRG0jHLNFyqVzjvBvvyPphj3Lm3YKf3dz4v5Pc5aOYqM+XUbYjXXKufvDIe3aH47s0hr/VKGOqW29PVii2CuaWytgEvKA5+0/xgxixdX9Gw/ju6izPhdZdhZOvvsNfmFwmdyCk=',
             '__VIEWSTATE': 'wZJYAJ4apaSNIy6vpSc3lfdnAq7DiIZL1BrsRWJxfl4ag36f36MPkJPTqugGwo4e6abcMx4C3JxfFx5AcpumXYAP+KQb/By/GPc54wXQSM4=',
             '__VIEWSTATEGENERATOR': 'E13CECB1',
@@ -49,7 +49,7 @@ class Client {
             'ctl00$MainContent$password': this.password,
             'ctl00$MainContent$username': this.username
         };
-        let loginConfig = {
+        const loginConfig = {
             headers: { 
                 'Content-Type': 'application/x-www-form-urlencoded', 
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 
@@ -68,8 +68,8 @@ class Client {
         })
     }
     public getClasses(gradingPeriodGU: string, schoolID: string,): Promise<JSON>  {
-        let gradebookData = `{"request":{"gradingPeriodGU":"${gradingPeriodGU}","AGU":"0","schoolID":${schoolID}}}`;
-        let gradebookConfig = {
+        const gradebookData = `{"request":{"gradingPeriodGU":"${gradingPeriodGU}","AGU":"0","schoolID":${schoolID}}}`;
+        const gradebookConfig = {
             jar: this.cookieJar,
             withCredentials: true,
             headers: { 
@@ -95,8 +95,8 @@ class Client {
     }
 
     public getClass(classID: string, gradingPeriodGU: string, orgYearGU: string): Promise<JSON> {
-        let loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${classID},"gradePeriodGU":"${gradingPeriodGU}","OrgYearGU":"${orgYearGU}"}}}`;
-        let loadControlConfig = {
+        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${classID},"gradePeriodGU":"${gradingPeriodGU}","OrgYearGU":"${orgYearGU}"}}}`;
+        const loadControlConfig = {
             jar: this.cookieJar,
             withCredentials: true,
             headers: {
@@ -112,8 +112,8 @@ class Client {
             }
         }
 
-        let classData = '{"FriendlyName":"genericdata.classdata","Method":"GetClassData","Parameters":"{}"}';
-        let classConfig = {
+        const classData = '{"FriendlyName":"genericdata.classdata","Method":"GetClassData","Parameters":"{}"}';
+        const classConfig = {
             jar: this.cookieJar,
             withCredentials: true,
             headers: {
@@ -141,8 +141,8 @@ class Client {
     }
 
     public getAssignments(classID: string, gradingPeriodGU: string, orgYearGU: string): Promise<JSON> {
-        let loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${classID},"gradePeriodGU":"${gradingPeriodGU}","OrgYearGU":"${orgYearGU}"}}}`
-        let loadControlConfig = {
+        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${classID},"gradePeriodGU":"${gradingPeriodGU}","OrgYearGU":"${orgYearGU}"}}}`
+        const loadControlConfig = {
             jar: this.cookieJar,
             withCredentials: true,
             headers: {
@@ -158,8 +158,8 @@ class Client {
             }
         }
 
-        let classData = '{"FriendlyName":"pxp.course.content.items","Method":"LoadWithOptions","Parameters":"{\\"loadOptions\\":{\\"sort\\":[{\\"selector\\":\\"due_date\\",\\"desc\\":false}],\\"filter\\":[[\\"isDone\\",\\"=\\",false]],\\"group\\":[{\\"Selector\\":\\"Week\\",\\"desc\\":false}],\\"requireTotalCount\\":true,\\"userData\\":{}},\\"clientState\\":{}}"}';
-        let classConfig = {
+        const classData = '{"FriendlyName":"pxp.course.content.items","Method":"LoadWithOptions","Parameters":"{\\"loadOptions\\":{\\"sort\\":[{\\"selector\\":\\"due_date\\",\\"desc\\":false}],\\"filter\\":[[\\"isDone\\",\\"=\\",false]],\\"group\\":[{\\"Selector\\":\\"Week\\",\\"desc\\":false}],\\"requireTotalCount\\":true,\\"userData\\":{}},\\"clientState\\":{}}"}';
+        const classConfig = {
             jar: this.cookieJar,
             withCredentials: true,
             headers: {
@@ -183,11 +183,37 @@ class Client {
                     reject(err);
                 })
             })
-        })
+        });
     }
 
-    public setParams(): void {
-        return
+    public setParams(): Promise<void> {
+        const gradebookConfig = {
+            jar: this.cookieJar,
+            withCredentials: true,
+            headers: {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "Host": "md-mcps-psv.edupoint.com",
+                "Referer": "https://md-mcps-psv.edupoint.com/PXP2_LaunchPad.aspx",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-Fetch-User": "?1"
+            }
+        }
+        return new Promise<void>((resolve, reject) => {
+            this.client.get('/PXP2_GradeBook.aspx?AGU=0', gradebookConfig).then(({ data }) => {
+                let line:string = data.split('\n')[17];
+                line = line.substring(line.indexOf('{'), line.length - 1);
+                const jsondata = JSON.parse(line);
+                this.schoolID = jsondata["Schools"][0]["SchoolID"];
+                this.orgYearGU = jsondata["Schools"][0]["GradingPeriods"][0]["OrgYearGU"];
+                console.log(this.schoolID);
+                console.log(this.orgYearGU);
+                resolve();
+            }).catch((err) => {
+                reject(err);
+            })
+        });
     }
 }
 

@@ -15,7 +15,8 @@ class Client {
     private username: string;
     private password: string;
     private schoolID = '';
-    private orgYearGU = ''
+    private orgYearGU = '';
+    private periods: any;
     public sessionId = '';
     public cookieJar = new CookieJar();
     public client = wrapper(axios.create({
@@ -67,7 +68,7 @@ class Client {
                 console.log(err);
         })
     }
-    public getClasses(gradingPeriodGU: string, schoolID: string,): Promise<JSON>  {
+    public getClasses(gradingPeriodGU: string, schoolID: string): Promise<JSON>  {
         const gradebookData = `{"request":{"gradingPeriodGU":"${gradingPeriodGU}","AGU":"0","schoolID":${schoolID}}}`;
         const gradebookConfig = {
             jar: this.cookieJar,
@@ -207,8 +208,10 @@ class Client {
                 const jsondata = JSON.parse(line);
                 this.schoolID = jsondata["Schools"][0]["SchoolID"];
                 this.orgYearGU = jsondata["Schools"][0]["GradingPeriods"][0]["OrgYearGU"];
-                console.log(this.schoolID);
-                console.log(this.orgYearGU);
+                this.periods = [] as [string, string][];
+                for (const period of jsondata["Schools"][0]["GradingPeriods"]) {
+                    this.periods.push([period["Name"], period["GU"]]);
+                }
                 resolve();
             }).catch((err) => {
                 reject(err);

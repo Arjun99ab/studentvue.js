@@ -76,11 +76,12 @@ function loginVUE(username: string, password: string, hostURL: string): Promise<
         const host = new URL(hostURL).host 
         const client = new Client(username, password, host);
         client.createSession().then(() => {
-            client.setParams().then(() => {
-                res(client);
-            }).catch((err) => {
-                rej(err);
-            })
+            // client.setParams().then(() => {
+            //     res(client);
+            // }).catch((err) => {
+            //     rej(err);
+            // })
+            res(client);
         }).catch((err) => {
             rej(err);
         })
@@ -148,9 +149,11 @@ class Client {
         })
     }
     public getClasses(): Promise<JSON>  {
-        const gradebookData = `{"request":{"gradingPeriodGU":"${this.periods[this.currentPeriod][1]}","AGU":"0","schoolID":${this.schoolID}}}`;
+        // const gradebookData = `{"request":{"gradingPeriodGU":"${this.periods[this.currentPeriod][1]}","AGU":"0","schoolID":${this.schoolID}}}`;
+        let gradebookData = '{"request":{"gradingPeriodGU":"1022E1B6-C707-495E-89AB-BF4811ED3EF1","AGU":"0","orgYearGU":"2770147F-2A1B-44E3-87E8-90EE58CD89E7","schoolID":199,"markPeriodGU":"90D5191E-ABB2-4F94-A1A3-159A82A79B82"}}';
         console.log(gradebookData);
         console.log("OUTPUT HERE");
+        console.log(this.cookieJar.toJSON().cookies[0].value)
         const gradebookConfig = {
             jar: this.cookieJar,
             withCredentials: true,

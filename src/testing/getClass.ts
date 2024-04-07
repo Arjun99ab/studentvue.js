@@ -17,7 +17,7 @@ const loginMethod = async () => {
 
 const main = async () => {
     await loginMethod();
-    client.getClass("443672", "1022E1B6-C707-495E-89AB-BF4811ED3EF1", "2770147F-2A1B-44E3-87E8-90EE58CD89E7").then((data) => {
+    client.getClasses("1022E1B6-C707-495E-89AB-BF4811ED3EF1", "199").then((data) => {
         console.log(JSON.stringify(data));
     });
 }

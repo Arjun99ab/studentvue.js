@@ -14,6 +14,8 @@ class Client {
     private hostUrl: string;
     private username: string;
     private password: string;
+    // private schoolID: string;
+    // private orgYearID: string;
     // public sessionId: string = '';
     public cookieJar = new CookieJar();
     public client = wrapper(axios.create({
@@ -65,8 +67,8 @@ class Client {
                 console.log(err);
         })
     }
-    public getClasses(gradingPeriodGU: string, AGU: string, orgYearGU: string, schoolID: string, markingPeriodGU: string): Promise<JSON>  {
-        let gradebookData = `{"request":{"gradingPeriodGU":"${gradingPeriodGU}}","AGU":"0","orgYearGU":"${orgYearGU}","schoolID":${schoolID}},"markPeriodGU":"${markingPeriodGU}"}}`;
+    public getClasses(gradingPeriodGU: string, schoolID: string,): Promise<JSON>  {
+        let gradebookData = `{"request":{"gradingPeriodGU":"${gradingPeriodGU}","AGU":"0","schoolID":${schoolID}}}`;
         let gradebookConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -81,7 +83,6 @@ class Client {
                 'Referer': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0',
             },
         };
-        console.log(this.cookieJar)
         return new Promise((resolve, reject) => {
             this.client.post("service/PXP2Communication.asmx/GradebookFocusClassInfo", gradebookData, gradebookConfig).then(({ data }) => {
                 // console.log(JSON.stringify(data))
@@ -183,6 +184,10 @@ class Client {
                 })
             })
         })
+    }
+
+    public setParams(): void {
+        return
     }
 }
 

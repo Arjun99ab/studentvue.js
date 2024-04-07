@@ -3,6 +3,8 @@ import axios from 'axios';
 import { wrapper } from 'axios-cookiejar-support';
 // @ts-ignore
 import { CookieJar } from 'tough-cookie';
+import RequestException from './RequestException/RequestException';
+
 
 interface Assignment {
 	name: string;
@@ -66,11 +68,24 @@ interface Grades {
 	}[];
 }
 
-const loginVUE = async (username: string, password: string, hostURL: string) => {
-    const client = new Client(username, password, hostURL);
-    await client.setParams();
-    await client.createSession();
-    return client;
+function loginVUE(username: string, password: string, hostURL: string): Promise<Client> {
+    return new Promise((res, rej) => {
+        if(hostURL.length === 0) {
+            return rej(new RequestException({ message: 'District URL cannot be an empty string' }));
+        }
+        const host = new URL(hostURL).host 
+        const client = new Client(username, password, host);
+        client.createSession().then(() => {
+            client.setParams().then(() => {
+                res(client);
+            }).catch((err) => {
+                rej(err);
+            })
+        }).catch((err) => {
+            rej(err);
+        })
+    
+    })
 }
 
 class Client {

@@ -4,8 +4,71 @@ import { wrapper } from 'axios-cookiejar-support';
 // @ts-ignore
 import { CookieJar } from 'tough-cookie';
 
-const login = async (username: string, password: string, hostURL: string) => {
-    let client = new Client(username, password, hostURL);
+interface Assignment {
+	name: string;
+	grade: {
+		letter: string;
+		raw: number;
+		color: string;
+	};
+	points: {
+		earned: number;
+		possible: number;
+	};
+	date: {
+		due: Date;
+		assigned: Date;
+	};
+	category: string;
+}
+
+interface Course {
+	name: string;
+	period: number;
+	room: string;
+	weighted: boolean;
+	grade: {
+		letter: string;
+		raw: number;
+		color: string;
+	};
+	teacher: {
+		name: string;
+		email: string;
+	};
+	categories: {
+		name: string;
+		weight: number;
+		grade: {
+			letter: string;
+			raw: number;
+			color: string;
+		};
+		points: {
+			earned: number;
+			possible: number;
+		};
+	}[];
+	assignments: Assignment[];
+}
+
+interface Grades {
+	courses: Course[];
+	gpa: number;
+	wgpa: number;
+	period: {
+		name: string;
+		index: number;
+	};
+	periods: {
+		name: string;
+		index: number;
+	}[];
+}
+
+const loginVUE = async (username: string, password: string, hostURL: string) => {
+    const client = new Client(username, password, hostURL);
+    await client.setParams();
     await client.createSession();
     return client;
 }
@@ -17,6 +80,7 @@ class Client {
     private schoolID = '';
     private orgYearGU = '';
     private periods: any;
+    private currentPeriod = 6;
     public sessionId = '';
     public cookieJar = new CookieJar();
     public client = wrapper(axios.create({
@@ -68,8 +132,10 @@ class Client {
                 console.log(err);
         })
     }
-    public getClasses(gradingPeriodGU: string, schoolID: string): Promise<JSON>  {
-        const gradebookData = `{"request":{"gradingPeriodGU":"${gradingPeriodGU}","AGU":"0","schoolID":${schoolID}}}`;
+    public getClasses(): Promise<JSON>  {
+        const gradebookData = `{"request":{"gradingPeriodGU":"${this.periods[this.currentPeriod][1]}","AGU":"0","schoolID":${this.schoolID}}}`;
+        console.log(gradebookData);
+        console.log("OUTPUT HERE");
         const gradebookConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -220,4 +286,4 @@ class Client {
     }
 }
 
-export { Client, login }
+export { Client, loginVUE }

@@ -4,8 +4,10 @@ import { wrapper } from 'axios-cookiejar-support';
 // @ts-ignore
 import { CookieJar } from 'tough-cookie';
 
-const login = (username: string, password: string, hostURL: string) => {
-    return new Client(username, password, hostURL);
+const login = async (username: string, password: string, hostURL: string) => {
+    let client = new Client(username, password, hostURL);
+    await client.createSession();
+    return client;
 }
 
 class Client {
@@ -35,9 +37,8 @@ class Client {
         this.hostUrl = hostUrl;
         this.username = username;
         this.password = password;
-        this.createSession();
     }
-    public createSession(): Promise<void> {
+    public async createSession(): Promise<void> {
         let loginData = {
             '__EVENTVALIDATION': 'UGw6YPMBC2Ub2woFOSKtuDnEaAJXmBfHSaK42KRG0jHLNFyqVzjvBvvyPphj3Lm3YKf3dz4v5Pc5aOYqM+XUbYjXXKufvDIe3aH47s0hr/VKGOqW29PVii2CuaWytgEvKA5+0/xgxixdX9Gw/ju6izPhdZdhZOvvsNfmFwmdyCk=',
             '__VIEWSTATE': 'wZJYAJ4apaSNIy6vpSc3lfdnAq7DiIZL1BrsRWJxfl4ag36f36MPkJPTqugGwo4e6abcMx4C3JxfFx5AcpumXYAP+KQb/By/GPc54wXQSM4=',
@@ -56,21 +57,14 @@ class Client {
                 'host': 'md-mcps-psv.edupoint.com', 
             },
         };
-        return new Promise((resolve, reject) => {
-            this.client.post("PXP2_Login_Student.aspx?regenerateSessionId=True", loginData, loginConfig).then(({ config }) => {
+        await this.client.post("PXP2_Login_Student.aspx?regenerateSessionId=True", loginData, loginConfig).then(({ config }) => {
                 if (config.jar) {
                     this.cookieJar = config.jar;
-                    resolve();
-                } else {
-                    reject();
                 }
             }).catch((err) => {
                 console.log(err);
-                reject();
-            })
         })
     }
-
     public getClasses(): Promise<JSON>  {
         let gradebookData = '{"request":{"gradingPeriodGU":"1022E1B6-C707-495E-89AB-BF4811ED3EF1","AGU":"0","orgYearGU":"2770147F-2A1B-44E3-87E8-90EE58CD89E7","schoolID":199,"markPeriodGU":"90D5191E-ABB2-4F94-A1A3-159A82A79B82"}}';
         let gradebookConfig = {

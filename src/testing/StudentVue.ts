@@ -76,11 +76,12 @@ function loginVUE(username: string, password: string, hostURL: string): Promise<
         const host = new URL(hostURL).host 
         const client = new Client(username, password, host);
         client.createSession().then(() => {
-            client.setParams().then(() => {
-                res(client);
-            }).catch((err) => {
-                rej(err);
-            })
+            // client.setParams().then(() => {
+            //     res(client);
+            // }).catch((err) => {
+            //     rej(err);
+            // })
+            res(client);
         }).catch((err) => {
             rej(err);
         })

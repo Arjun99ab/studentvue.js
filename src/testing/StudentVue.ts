@@ -76,12 +76,11 @@ function loginVUE(username: string, password: string, hostURL: string): Promise<
         const host = new URL(hostURL).host 
         const client = new Client(username, password, host);
         client.createSession().then(() => {
-            // client.setParams().then(() => {
-            //     res(client);
-            // }).catch((err) => {
-            //     rej(err);
-            // })
-            res(client);
+            client.setParams().then(() => {
+                res(client);
+            }).catch((err) => {
+                rej(err);
+            })
         }).catch((err) => {
             rej(err);
         })
@@ -96,6 +95,7 @@ class Client {
     private schoolID = '';
     private orgYearGU = '';
     private periods: any;
+    private classes: any;
     private currentPeriod = 6;
     public sessionId = '';
     public cookieJar = new CookieJar();
@@ -149,11 +149,7 @@ class Client {
         })
     }
     public getClasses(): Promise<JSON>  {
-        // const gradebookData = `{"request":{"gradingPeriodGU":"${this.periods[this.currentPeriod][1]}","AGU":"0","schoolID":${this.schoolID}}}`;
-        let gradebookData = '{"request":{"gradingPeriodGU":"1022E1B6-C707-495E-89AB-BF4811ED3EF1","AGU":"0","orgYearGU":"2770147F-2A1B-44E3-87E8-90EE58CD89E7","schoolID":199,"markPeriodGU":"90D5191E-ABB2-4F94-A1A3-159A82A79B82"}}';
-        console.log(gradebookData);
-        console.log("OUTPUT HERE");
-        console.log(this.cookieJar.toJSON().cookies[0].value)
+        const gradebookData = `{"request":{"gradingPeriodGU":"${this.periods[this.currentPeriod][0]}","AGU":"0","schoolID":${this.schoolID}}}`;
         const gradebookConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -170,7 +166,10 @@ class Client {
         };
         return new Promise((resolve, reject) => {
             this.client.post("service/PXP2Communication.asmx/GradebookFocusClassInfo", gradebookData, gradebookConfig).then(({ data }) => {
-                // console.log(JSON.stringify(data))
+                this.classes = [] as [string, string, string][];
+                for (const c of data["d"]["Data"]["Classes"]) {
+                    this.classes.push([c["ID"], c["Name"], c["TeacherName"]]);
+                }
                 resolve(data);
             }).catch((err) => {
                 console.log(err);
@@ -179,8 +178,8 @@ class Client {
         })
     }
 
-    public getClass(classID: string, gradingPeriodGU: string, orgYearGU: string): Promise<JSON> {
-        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${classID},"gradePeriodGU":"${gradingPeriodGU}","OrgYearGU":"${orgYearGU}"}}}`;
+    public getClass(classPd: number): Promise<JSON> {
+        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"gradePeriodGU":"${this.periods[this.currentPeriod]}","OrgYearGU":"${this.orgYearGU}"}}}`;
         const loadControlConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -225,8 +224,8 @@ class Client {
         })
     }
 
-    public getAssignments(classID: string, gradingPeriodGU: string, orgYearGU: string): Promise<JSON> {
-        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${classID},"gradePeriodGU":"${gradingPeriodGU}","OrgYearGU":"${orgYearGU}"}}}`
+    public getAssignments(classPd: number): Promise<JSON> {
+        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"gradePeriodGU":"${this.periods[this.currentPeriod]}","OrgYearGU":"${this.orgYearGU}"}}}`
         const loadControlConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -294,7 +293,7 @@ class Client {
                 this.orgYearGU = jsondata["Schools"][0]["GradingPeriods"][0]["OrgYearGU"];
                 this.periods = [] as [string, string][];
                 for (const period of jsondata["Schools"][0]["GradingPeriods"]) {
-                    this.periods.push([period["Name"], period["GU"]]);
+                    this.periods.push([period["GU"], period["Name"]]);
                 }
                 resolve();
             }).catch((err) => {

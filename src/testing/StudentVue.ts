@@ -329,7 +329,7 @@ class Client {
                 },
                 category: assignment["assignmentType"],
             }
-            assignments.push(assignment);
+            assignments.push(obj);
         }
         return assignments;
     }

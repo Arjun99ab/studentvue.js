@@ -248,6 +248,22 @@ class Client {
         else return false;
     };
 
+    private letterGrade = (grade: number): string => {
+        if (grade >= 89.5) {
+            return "A";
+        } else if (grade >= 79.5) {
+            return "B";
+        } else if (grade >= 69.5) {
+            return "C";
+        } else if (grade >= 59.5) {
+            return "D";
+        } else if (!isNaN(grade)) {
+            return "E";
+        } else {
+            return "N/A";
+        }
+    };
+
     private letterGradeColor = (letterGrade: string) => {
         switch (letterGrade) {
             case "A":
@@ -269,9 +285,26 @@ class Client {
         const arr = [] as Course["categories"];
         for (const category of course["measureTypeGrades"]) {
             const obj = {
+                name: (() => {
+                    for (const i of course["measureTypes"]) {
+                        if (i["id"] === category["measureTypeId"]) {
+                            return i["name"];
+                        }
+                    }
+                    return "UNKNOWN CATEGORY";
+                })(),
                 weight: category["measureTypeWeight"],
-                // TODO
+                grade: {
+                    letter: this.letterGrade(category["points"] / category["pointsPossible"] * 100),
+                    raw: parseFloat(((category["points"] / category["pointsPossible"]) * 100).toFixed(2)),
+                    color: this.letterGradeColor(this.letterGrade((category["points"] / category["pointsPossible"]) * 100))
+                },
+                points: {
+                    earned: category["points"],
+                    possible: category["pointsPossible"]
+                }
             }
+            arr.push(obj);
         }
         return arr;
     };
@@ -294,7 +327,7 @@ class Client {
                     room: "ROOM", // TODO
                     weighted: this.isWeighted(c["Name"]),
                     grade: {
-                        letter: course["students"][0]["calculatedMark"],
+                        letter: this.letterGrade(course["students"][0]["calculatedMark"]),
                         raw: course["students"][0]["percentage"],
                         color: this.letterGradeColor(course["students"][0]["calculatedMark"])
                     },
@@ -322,9 +355,7 @@ class Client {
             }]
         }
         return new Promise<Grades>((resolve, reject) => {
-            resolve(grades).catch((err) => {
-                reject(err);
-            })
+            resolve(grades);
         });
     }
 }

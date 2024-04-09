@@ -324,8 +324,8 @@ class Client {
                     possible: assignment["pointsPossible"]
                 },
                 date: {
-                    due: "DUE DATE", // TODO (turn into date)
-                    assigned: "ASSIGNED DATE", // TODO (turn into date)
+                    due: new Date(assignment["due_date"]),
+                    assigned: new Date(1970, 1, 1), // TODO
                 },
                 category: assignment["assignmentType"],
             }

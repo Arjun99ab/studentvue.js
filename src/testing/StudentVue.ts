@@ -290,8 +290,8 @@ class Client {
                 const course = await this.getClass(i);
                 courses.push({
                     name: c["Name"],
-                    period: 0,
-                    room: "ROOM",
+                    period: 0, // TODO
+                    room: "ROOM", // TODO
                     weighted: this.isWeighted(c["Name"]),
                     grade: {
                         letter: course["students"][0]["calculatedMark"],
@@ -300,7 +300,7 @@ class Client {
                     },
                     teacher: {
                         name: c["TeacherName"],
-                        email: "EMAIL"
+                        email: "EMAIL" // TODO
                     },
                     categories: this.parseCategories(course),
                     assignments: this.parseAssignments(this.getAssignments(1))
@@ -310,9 +310,22 @@ class Client {
         })
         const grades: Grades = {
             courses: courses,
-
-
+            gpa: 0, // TODO
+            wgpa: 0, // TODO
+            period: {
+                name: "MARKING PERIOD NAME", // TODO
+                index: 0 // TODO
+            },
+            periods:  [{
+                name: "MARKING PERIOD NAME", // TODO
+                index: 0 // TODO
+            }]
         }
+        return new Promise<Grades>((resolve, reject) => {
+            resolve(grades).catch((err) => {
+                reject(err);
+            })
+        });
     }
 }
 

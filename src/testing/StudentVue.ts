@@ -282,7 +282,7 @@ class Client {
     };
 
     private parseCategories = (course) => {
-        const arr = [] as Course["categories"];
+        const categories = [] as Course["categories"];
         for (const category of course["measureTypeGrades"]) {
             const obj = {
                 name: (() => {
@@ -304,15 +304,34 @@ class Client {
                     possible: category["pointsPossible"]
                 }
             }
-            arr.push(obj);
+            categories.push(obj);
         }
-        return arr;
+        return categories;
     };
 
     public parseAssignments = (data) => {
-        const arr = [] as Assignment[];
-        // TODO
-        return arr;
+        const assignments = [] as Assignment[];
+        for (const assignment of data["responseData"]["data"]) {
+            const obj = {
+                name: assignment["title"],
+                grade: {
+                    letter: this.letterGrade((assignment["points"] / assignment["pointsPossible"]) * 100),
+                    raw: parseFloat(((assignment["points"] / assignment["pointsPossible"]) * 100).toFixed(2)),
+                    color: this.letterGradeColor(this.letterGrade((assignment["points"] / assignment["pointsPossible"]) * 100))
+                },
+                points: {
+                    earned: assignment["points"],
+                    possible: assignment["pointsPossible"]
+                },
+                date: {
+                    due: "DUE DATE", // TODO
+                    assigned: "ASSIGNED DATE", // TODO
+                },
+                category: assignment["assignmentType"],
+            }
+            assignments.push(assignment);
+        }
+        return assignments;
     }
 
     public gradebook(): Promise<Grades> {

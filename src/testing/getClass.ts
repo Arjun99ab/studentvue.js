@@ -18,9 +18,8 @@ const login = async () => {
 const main = async () => {
     await login();
     await client.getClasses();
-    client.getAssignments(6).then((data) => {
-        console.log(JSON.stringify(data));
-    })
+    const response = await client.gradebook();
+    console.log(response);
 }
 
 main();

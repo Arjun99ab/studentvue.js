@@ -68,6 +68,10 @@ interface Grades {
 	}[];
 }
 
+interface JSONInput {
+    [key: string]: any;
+}
+
 function loginVUE(username: string, password: string, hostURL: string): Promise<Client> {
     return new Promise((res, rej) => {
         if(hostURL.length === 0) {
@@ -281,7 +285,7 @@ class Client {
         }
     };
 
-    private parseCategories = (course) => {
+    private parseCategories = (course: JSONInput) => {
         const categories = [] as Course["categories"];
         for (const category of course["measureTypeGrades"]) {
             const obj = {
@@ -309,7 +313,7 @@ class Client {
         return categories;
     };
 
-    public parseAssignments = (data) => {
+    public parseAssignments = (data: JSONInput) => {
         const assignments = [] as Assignment[];
         for (const assignment of data["responseData"]["data"]) {
             const obj = {
@@ -336,10 +340,10 @@ class Client {
 
     public gradebook(): Promise<Grades> {
         const courses: Course[] = [];
-        this.getClasses().then(async (res) => {
+        this.getClasses().then(async (res: JSONInput) => {
             let i = 0;
             for (const c of res["d"]["Data"]["Classes"]) {
-                const course = await this.getClass(i);
+                const course: JSONInput = await this.getClass(i);
                 courses.push({
                     name: c["Name"],
                     period: 0, // TODO
@@ -355,7 +359,7 @@ class Client {
                         email: "EMAIL" // TODO
                     },
                     categories: this.parseCategories(course),
-                    assignments: this.parseAssignments(this.getAssignments(1))
+                    assignments: this.parseAssignments(await this.getAssignments(1))
                 })
                 i++;
             }
@@ -373,7 +377,7 @@ class Client {
                 index: 0 // TODO
             }]
         }
-        return new Promise<Grades>((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             resolve(grades);
         });
     }

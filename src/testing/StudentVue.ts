@@ -265,6 +265,23 @@ class Client {
         }
     };
 
+    private parseCategories = (course) => {
+        const arr = [] as Course["categories"];
+        for (const category of course["measureTypeGrades"]) {
+            const obj = {
+                weight: category["measureTypeWeight"],
+                // TODO
+            }
+        }
+        return arr;
+    };
+
+    public parseAssignments = (data) => {
+        const arr = [] as Assignment[];
+        // TODO
+        return arr;
+    }
+
     public gradebook(): Promise<Grades> {
         const courses: Course[] = [];
         this.getClasses().then(async (res) => {

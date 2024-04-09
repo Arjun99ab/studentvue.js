@@ -10,7 +10,7 @@ const DISTRICTURL = "https://md-mcps-psv.edupoint.com/";
 let client:Client;
 
 const login = async () => {
-    await loginVUE(USERNAME, PASSWORD, DISTRICTURL).then((c: Client) => {
+    await loginVUE(USERNAME, PASSWORD, DISTRICTURL, true).then((c: Client) => {
         client = c;
     })
 };
@@ -18,8 +18,11 @@ const login = async () => {
 const main = async () => {
     await login();
     await client.getClasses();
-    const response = await client.gradebook();
-    console.log(response);
+    // const response = await client.gradebook();
+    // console.log(response);
+    client.getClasses().then((res) => {
+        console.log(JSON.stringify(res));
+    })
 }
 
 main();

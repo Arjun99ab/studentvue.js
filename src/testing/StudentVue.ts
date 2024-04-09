@@ -72,13 +72,13 @@ interface JSONInput {
     [key: string]: any;
 }
 
-function loginVUE(username: string, password: string, hostURL: string): Promise<Client> {
+function loginVUE(username: string, password: string, hostURL: string, testmode?: boolean): Promise<Client> {
     return new Promise((res, rej) => {
         if(hostURL.length === 0) {
             return rej();
         }
         const host = new URL(hostURL).host 
-        const client = new Client(username, password, host);
+        const client = new Client(username, password, host, testmode===true);
         client.createSession().then(() => {
             client.setParams().then(() => {
                 res(client);

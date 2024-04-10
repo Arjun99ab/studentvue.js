@@ -354,10 +354,10 @@ class Client {
                         "Sec-Fetch-Mode": "navigate",
                         "Sec-Fetch-Site": "same-origin",
                         "Sec-Fetch-User": "?1",
-                        'Target-URL': 'https://md-mcps-psv.edupoint.com/api/GB/ClientSideData/Transfer?action=genericdata.classdata-GetClassData'
+                        'Target-URL': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0'
                     }
                 }
-                return {'Target-URL': 'https://md-mcps-psv.edupoint.com/api/GB/ClientSideData/Transfer?action=genericdata.classdata-GetClassData'}
+                return {'Target-URL': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0'}
             })()
         }
         return new Promise<void>((resolve, reject) => {

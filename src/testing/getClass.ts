@@ -17,12 +17,12 @@ const login = async () => {
 
 const main = async () => {
     await login();
-    await client.getClasses();
-    // const response = await client.gradebook();
-    // console.log(response);
-    client.getClasses().then((res) => {
-        console.log(JSON.stringify(res));
-    })
+    // await client.getClasses();
+    // // const response = await client.gradebook();
+    // // console.log(response);
+    // client.getClasses().then((res) => {
+    //     console.log(JSON.stringify(res));
+    // })
 }
 
 main();

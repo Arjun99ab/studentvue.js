@@ -338,6 +338,7 @@ class Client {
     }
 
     public setParams(): Promise<void> {
+        // console.log(this.cookieJar.toJSON())
         const gradebookConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -347,14 +348,13 @@ class Client {
             headers: (() => {
                 if (this.testmode) {
                     return {
-                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-                        "Host": "md-mcps-psv.edupoint.com",
-                        "Referer": "https://md-mcps-psv.edupoint.com/PXP2_LaunchPad.aspx",
-                        "Sec-Fetch-Dest": "document",
-                        "Sec-Fetch-Mode": "navigate",
-                        "Sec-Fetch-Site": "same-origin",
-                        "Sec-Fetch-User": "?1",
-                        'Target-URL': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0'
+                        'Host': 'md-mcps-psv.edupoint.com', 
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36', 
+                        'Accept': '*/*',
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Connection': 'keep-alive',
+                        'Target-URL': 'https://md-mcps-psv.edupoint.com/PXP2_Login_Student.aspx?regenerateSessionId=True',
+                        // 'Target-URL': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0'
                     }
                 }
                 return {'Target-URL': 'https://md-mcps-psv.edupoint.com/PXP2_GradeBook.aspx?AGU=0'}

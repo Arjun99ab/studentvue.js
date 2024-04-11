@@ -17,39 +17,8 @@ const login = async () => {
 
 const main = async () => {
     await login();
-    // await client.getClasses();
-    // // const response = await client.gradebook();
-    // // console.log(response);
-    // client.getClasses().then((res) => {
-    //     console.log(JSON.stringify(res));
-    // })
+    const gradebook = await client.gradebook();
+    // console.log(gradebook.courses);
 }
 
 main();
-
-// const client = new Client(process.env.USERNAME, process.env.PASSWORD, 'https://md-mcps-psv.edupoint.com/');
-// client.createSession().then(() => {
-//     console.log('done');
-//     // console.log(client.cookieJar.toJSON());
-
-//     // //get classes
-//     // console.log("GET CLASSES")
-//     // client.getClasses().then((data) => {
-//     //     console.log(JSON.stringify(data));
-//     // }
-//     // ).catch((err) => {
-//     //     console.log(err);
-//     // });
-
-//     // get class
-//     console.log("GET CLASS")
-//     client.getAssignments().then((data) => {
-//         console.log(JSON.stringify(data));
-//     }).catch((err) => {
-//         console.log(err)
-//     })
-
-// }).catch((err) => {
-//     console.log("ERROR")
-//     console.log(err);
-// });

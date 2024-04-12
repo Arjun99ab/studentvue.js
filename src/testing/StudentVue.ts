@@ -250,7 +250,7 @@ class Client {
             }
         }
 
-        const classData = '{"FriendlyName":"pxp.course.content.items","Method":"LoadWithOptions","Parameters":"{\\"loadOptions\\":{\\"sort\\":[{\\"selector\\":\\"due_date\\",\\"desc\\":false}],\\"filter\\":[[\\"isDone\\",\\"=\\",false]],\\"group\\":[{\\"Selector\\":\\"Week\\",\\"desc\\":false}],\\"requireTotalCount\\":true,\\"userData\\":{}},\\"clientState\\":{}}"}';
+        const classData = {"FriendlyName":"pxp.course.content.items","Method":"LoadWithOptions","Parameters":"{'loadOptions':{'sort':[{'selector':'due_date','desc':false}],'requireTotalCount':true,'userData':{}},'clientState':{}}"};
         const classConfig = {
             jar: this.cookieJar,
             withCredentials: true,

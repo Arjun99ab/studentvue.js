@@ -101,7 +101,7 @@ class Client {
     private orgYearGU = '';
     private periods: any;
     private classes: any;
-    private currentPeriod = 6;
+    private currentPeriod = 5;
     public sessionId = '';
     public cookieJar = new CookieJar();
     public client = wrapper(axios.create({
@@ -157,7 +157,7 @@ class Client {
         })
     }
     public getClasses(): Promise<JSON>  {
-        const gradebookData = `{"request":{"gradingPeriodGU":"${this.periods[this.currentPeriod][0]}","AGU":"0","schoolID":${this.schoolID}}}`;
+        const gradebookData = `{"request":{"gradingPeriodGU":"${this.periods[this.currentPeriod][1]}","AGU":"0","schoolID":${this.schoolID}}}`;
         const gradebookConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -187,7 +187,7 @@ class Client {
     }
 
     public getClass(classPd: number): Promise<JSON> {
-        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"gradePeriodGU":"${this.periods[this.currentPeriod]}","OrgYearGU":"${this.orgYearGU}"}}}`;
+        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"markPeriodGU":"${this.periods[this.currentPeriod][0]}","OrgYearGU":"${this.orgYearGU}"}}}`;
         const loadControlConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -233,7 +233,7 @@ class Client {
     }
 
     public getAssignments(classPd: number): Promise<JSON> {
-        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"gradePeriodGU":"${this.periods[this.currentPeriod]}","OrgYearGU":"${this.orgYearGU}"}}}`
+        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"markPeriodGU":"${this.periods[this.currentPeriod][0]}","OrgYearGU":"${this.orgYearGU}"}}}`
         const loadControlConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -250,7 +250,7 @@ class Client {
             }
         }
 
-        const classData = '{"FriendlyName":"pxp.course.content.items","Method":"LoadWithOptions","Parameters":"{\\"loadOptions\\":{\\"sort\\":[{\\"selector\\":\\"due_date\\",\\"desc\\":false}],\\"filter\\":[[\\"isDone\\",\\"=\\",false]],\\"group\\":[{\\"Selector\\":\\"Week\\",\\"desc\\":false}],\\"requireTotalCount\\":true,\\"userData\\":{}},\\"clientState\\":{}}"}';
+        const classData = {"FriendlyName":"pxp.course.content.items","Method":"LoadWithOptions","Parameters":"{'loadOptions':{'sort':[{'selector':'due_date','desc':false}],'requireTotalCount':true,'userData':{}},'clientState':{}}"};
         const classConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -301,7 +301,7 @@ class Client {
                 this.orgYearGU = jsondata["Schools"][0]["GradingPeriods"][0]["OrgYearGU"];
                 this.periods = [] as [string, string][];
                 for (const period of jsondata["Schools"][0]["GradingPeriods"]) {
-                    this.periods.push([period["GU"], period["Name"]]);
+                    this.periods.push([period["MarkPeriods"][0]["GU"], period["GU"], period["Name"]]);
                 }
                 resolve();
             }).catch((err) => {
@@ -405,9 +405,9 @@ class Client {
         return assignments;
     }
 
-    public gradebook(): Promise<Grades> {
+    public async gradebook(): Promise<Grades> {
         const courses: Course[] = [];
-        this.getClasses().then(async (res: JSONInput) => {
+        await this.getClasses().then(async (res: JSONInput) => {
             let i = 0;
             for (const c of res["d"]["Data"]["Classes"]) {
                 const course: JSONInput = await this.getClass(i);
@@ -426,15 +426,12 @@ class Client {
                         email: "EMAIL" // TODO
                     },
                     categories: this.parseCategories(course),
-                    assignments: this.parseAssignments(await this.getAssignments(1))
+                    assignments: this.parseAssignments(await this.getAssignments(i))
                 }
                 courses.push(res);
                 i++;
             }
         })
-        for (const course of courses) {
-            console.log(course);
-        }
         const grades: Grades = {
             courses: courses,
             gpa: 0, // TODO

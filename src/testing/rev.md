@@ -37,3 +37,20 @@
   }
 }
 ```
+
+## classes
+**URL:** https://md-mcps-psv.edupoint.com/service/PXP2Communication.asmx/GradebookFocusClassInfo\
+**Type:** POST\
+**Body:** raw (info from `parameters` req)
+```
+{
+    "request": {
+        "gradingPeriodGU": "",
+        "AGU": "0",
+        "orgYearGU": "",
+        "schoolID": 0,
+        "markPeriodGU": ""
+  }
+}
+```
+

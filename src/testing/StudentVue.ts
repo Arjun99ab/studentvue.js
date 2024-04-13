@@ -108,7 +108,6 @@ class Client {
     private orgYearGU = '';
     private periods = [] as Period[];
     private classes: any;
-    private currentPeriod = 5;
     public sessionId = '';
     public cookieJar = new CookieJar();
     public client = wrapper(axios.create({
@@ -163,8 +162,8 @@ class Client {
                 console.log(err);
         })
     }
-    public getClasses(): Promise<JSON>  {
-        const gradebookData = `{"request":{"gradingPeriodGU":"${this.periods[this.currentPeriod]["periodGU"]}","AGU":"0","schoolID":${this.schoolID}}}`;
+    public getClasses(p: number): Promise<JSON>  {
+        const gradebookData = `{"request":{"gradingPeriodGU":"${this.periods[p]["periodGU"]}","AGU":"0","schoolID":${this.schoolID}}}`;
         const gradebookConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -193,8 +192,8 @@ class Client {
         })
     }
 
-    public getClass(classPd: number): Promise<JSON> {
-        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"markPeriodGU":"${this.periods[this.currentPeriod]["markingGU"]}","OrgYearGU":"${this.orgYearGU}"}}}`;
+    public getClass(classPd: number, p: number): Promise<JSON> {
+        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"markPeriodGU":"${this.periods[p]["markingGU"]}","OrgYearGU":"${this.orgYearGU}"}}}`;
         const loadControlConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -239,8 +238,8 @@ class Client {
         })
     }
 
-    public getAssignments(classPd: number): Promise<JSON> {
-        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"markPeriodGU":"${this.periods[this.currentPeriod]["markingGU"]}","OrgYearGU":"${this.orgYearGU}"}}}`
+    public getAssignments(classPd: number, p: number): Promise<JSON> {
+        const loadControlData = `{"request":{"control":"Gradebook_RichContentClassDetails","parameters":{"classID":${this.classes[classPd][0]},"markPeriodGU":"${this.periods[p]["markingGU"]}","OrgYearGU":"${this.orgYearGU}"}}}`
         const loadControlConfig = {
             jar: this.cookieJar,
             withCredentials: true,
@@ -414,12 +413,12 @@ class Client {
         return assignments;
     }
 
-    public async gradebook(): Promise<Grades> {
+    public async gradebook(p=0): Promise<Grades> {
         const courses: Course[] = [];
-        await this.getClasses().then(async (res: JSONInput) => {
+        await this.getClasses(p).then(async (res: JSONInput) => {
             let i = 0;
             for (const c of res["d"]["Data"]["Classes"]) {
-                const course: JSONInput = await this.getClass(i);
+                const course: JSONInput = await this.getClass(i, p);
                 const res = {
                     name: c["Name"],
                     period: 0, // TODO
@@ -435,7 +434,7 @@ class Client {
                         email: "EMAIL" // TODO
                     },
                     categories: this.parseCategories(course),
-                    assignments: this.parseAssignments(await this.getAssignments(i))
+                    assignments: this.parseAssignments(await this.getAssignments(i, p))
                 }
                 courses.push(res);
                 i++;
@@ -446,8 +445,8 @@ class Client {
             gpa: 0, // TODO
             wgpa: 0, // TODO
             period: {
-                name: this.periods[this.currentPeriod]["name"], // TODO
-                index: this.currentPeriod
+                name: this.periods[p]["name"],
+                index: p
             },
             periods:  map(this.periods, (period, i) => {
                 return {

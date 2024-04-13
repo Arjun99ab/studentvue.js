@@ -17,7 +17,7 @@ const login = async () => {
 
 const main = async () => {
     await login();
-    const gradebook = await client.gradebook();
+    const gradebook = await client.gradebook(2);
     console.log(gradebook);
 }
 
